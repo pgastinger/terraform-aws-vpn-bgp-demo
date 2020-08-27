@@ -9,9 +9,24 @@ data "aws_ami" "app_ami" {
   }
 }
 
+data "aws_ami" "router_ami" {
+  most_recent = true
+  owners      = ["099720109477"]
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}
+
 resource "aws_instance" "router" {
-  ami                    = data.aws_ami.app_ami.id
-  instance_type          = "t2.micro"
+  ami                    = data.aws_ami.router_ami.id
+  instance_type          = "t3.small"
   count                  = 2
   key_name               = aws_key_pair.my_pub_key.key_name
   subnet_id              = aws_subnet.ONPREM-PUBLIC.id
@@ -19,6 +34,28 @@ resource "aws_instance" "router" {
   iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
   tags = {
     Name = "ONPREM-ROUTER${count.index + 1}"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt update && sudo apt install -y strongswan wget",
+      "mkdir /home/ubuntu/demo_assets",
+      "cd /home/ubuntu/demo_assets",
+      "wget https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter1/ipsec-vti.sh",
+      "wget https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter1/ipsec.conf",
+      "wget https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter1/ipsec.secrets",
+      "wget https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter1/51-eth1.yaml",
+      "wget https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter1/ffrouting-install.sh",
+      "sudo chown ubuntu:ubuntu /home/ubuntu/demo_assets -R",
+      "sudo cp /home/ubuntu/demo_assets/51-eth1.yaml /etc/netplan",
+      "sudo netplan --debug apply"
+    ]
+    connection {
+      type        = "ssh"
+      host        = self.public_ip
+      user        = "ubuntu"
+      private_key = file("${path.module}/my_keys")
+    }
   }
 
 }
