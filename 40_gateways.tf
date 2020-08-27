@@ -6,7 +6,7 @@ resource "aws_ec2_transit_gateway" "tgw" {
 
 resource "aws_customer_gateway" "router1" {
   bgp_asn    = 65016
-  ip_address = aws_instance.router[0].public_ip
+  ip_address = aws_eip.router1_eip.public_ip
   type       = "ipsec.1"
 
   tags = {
@@ -16,7 +16,7 @@ resource "aws_customer_gateway" "router1" {
 
 resource "aws_customer_gateway" "router2" {
   bgp_asn    = 65016
-  ip_address = aws_instance.router[1].public_ip
+  ip_address = aws_eip.router2_eip.public_ip
   type       = "ipsec.1"
 
   tags = {
