@@ -16,7 +16,7 @@ resource "aws_route_table_association" "onprem-public-subnet" {
 }
 
 resource "aws_route_table" "aws-rt" {
-  vpc_id = aws_vpc.aws.id
+  vpc_id = aws_vpc.a4l_aws.id
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -37,3 +37,8 @@ resource "aws_route_table_association" "aws-subnet-B" {
   route_table_id = aws_route_table.aws-rt.id
 }
 
+resource "aws_ec2_transit_gateway_vpc_attachment" "tgw_attach" {
+  subnet_ids         = [aws_subnet.sn-aws-private-A.id, aws_subnet.sn-aws-private-B.id]
+  transit_gateway_id = aws_ec2_transit_gateway.tgw.id
+  vpc_id             = aws_vpc.a4l_aws.id
+}

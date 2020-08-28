@@ -1,6 +1,12 @@
 output "router1_public_ip" {
   value = aws_instance.router[0].public_ip
 }
+output "router1_private_ip" {
+  value = aws_instance.router[0].private_ip
+}
+output "router2_private_ip" {
+  value = aws_instance.router[1].private_ip
+}
 output "tunnel1_preshared_key" {
   value = aws_vpn_connection.A4LTGW_R1.tunnel1_preshared_key
 }
