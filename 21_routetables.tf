@@ -25,6 +25,7 @@ resource "aws_route_table" "aws-rt" {
   tags = {
     Name = "A4L-AWS-RT"
   }
+  depends_on = aws_ec2_transit_gateway_vpc_attachment.tgw_attach
 }
 
 resource "aws_route_table_association" "aws-subnet-A" {
