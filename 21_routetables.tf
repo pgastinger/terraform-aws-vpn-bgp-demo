@@ -20,12 +20,16 @@ resource "aws_route_table" "aws-rt" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_ec2_transit_gateway.tgw.id
+    transit_gateway_id = aws_ec2_transit_gateway.tgw.id
   }
   tags = {
     Name = "A4L-AWS-RT"
   }
-  depends_on = aws_ec2_transit_gateway_vpc_attachment.tgw_attach
+  depends_on = [
+    aws_ec2_transit_gateway_vpc_attachment.tgw_attach,
+    aws_ec2_transit_gateway.tgw
+
+  ]
 }
 
 resource "aws_route_table_association" "aws-subnet-A" {
