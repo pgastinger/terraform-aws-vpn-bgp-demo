@@ -26,7 +26,7 @@ data "aws_ami" "router_ami" {
 
 resource "aws_instance" "router" {
   ami                    = data.aws_ami.router_ami.id
-  instance_type          = "t3.small"
+  instance_type          = "t2.micro"
   count                  = 2
   key_name               = aws_key_pair.my_pub_key.key_name
   subnet_id              = aws_subnet.ONPREM-PUBLIC.id
