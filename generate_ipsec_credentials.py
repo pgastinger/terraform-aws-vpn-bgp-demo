@@ -63,9 +63,8 @@ for filename, values in files_to_download.items():
         print(f"scp -i my_keys {router}_{filename} ubuntu@{public_ip}:~/demo_assets/{filename}")
 
 
-
-
 for router in ["router1","router2"]:
     public_ip = terraform_output[f"{router}_public_ip"]["value"]
     print(f"ssh -i my_keys ubuntu@{public_ip} 'sudo cp ~/demo_assets/ipsec* /etc/'")
-    print(f"ssh -i my_keys ubuntu@{public_ip} 'sudo service ipsec restart")
+    print(f"ssh -i my_keys ubuntu@{public_ip} 'sudo chmod +x /etc/ipsec-vti.sh'")
+    print(f"ssh -i my_keys ubuntu@{public_ip} 'sudo service ipsec restart'")
