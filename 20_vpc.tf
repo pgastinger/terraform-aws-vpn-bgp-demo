@@ -50,7 +50,7 @@ resource "aws_subnet" "ONPREM-PRIVATE-2" {
   vpc_id                  = aws_vpc.onprem.id
   cidr_block              = "192.168.11.0/24"
   map_public_ip_on_launch = "true"
-  availability_zone       = data.aws_availability_zones.available.names[1]
+  availability_zone       = data.aws_availability_zones.available.names[0]
 
   tags = {
     Name = "ONPREM-PRIVATE-2"
@@ -61,7 +61,7 @@ resource "aws_subnet" "ONPREM-PUBLIC" {
   vpc_id                  = aws_vpc.onprem.id
   cidr_block              = "192.168.12.0/24"
   map_public_ip_on_launch = "true"
-  availability_zone       = data.aws_availability_zones.available.names[2]
+  availability_zone       = data.aws_availability_zones.available.names[0]
 
   tags = {
     Name = "ONPREM-PUBLIC"

@@ -47,6 +47,7 @@ resource "aws_instance" "router" {
       "wget https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter1/51-eth1.yaml",
       "wget https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter1/ffrouting-install.sh",
       "sudo chown ubuntu:ubuntu /home/ubuntu/demo_assets -R",
+      "sudo chmod +x /home/ubuntu/demo_assets/ffrouting-install.sh",
       "sudo cp /home/ubuntu/demo_assets/51-eth1.yaml /etc/netplan",
       "sudo netplan --debug apply"
     ]
@@ -59,6 +60,27 @@ resource "aws_instance" "router" {
   }
 
 }
+
+resource "aws_network_interface" "router1_lan" {
+  subnet_id       = aws_subnet.ONPREM-PRIVATE-1.id
+  security_groups = [aws_security_group.onprem-sg.id]
+
+  attachment {
+    instance     = aws_instance.router[0].id
+    device_index = 1
+  }
+}
+
+resource "aws_network_interface" "router2_lan" {
+  subnet_id       = aws_subnet.ONPREM-PRIVATE-2.id
+  security_groups = [aws_security_group.onprem-sg.id]
+
+  attachment {
+    instance     = aws_instance.router[1].id
+    device_index = 1
+  }
+}
+
 
 resource "aws_instance" "server1" {
   ami                         = data.aws_ami.app_ami.id
