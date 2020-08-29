@@ -7,16 +7,16 @@ import subprocess
 
 files_to_download = {
     'ipsec-vti.sh': {
-        'router1': 'https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter1/ipsec-vti.sh',
-        'router2': 'https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter2/ipsec-vti.sh',
+        'router1': 'https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/router1/ipsec-vti.sh',
+        'router2': 'https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/router2/ipsec-vti.sh',
     },
     'ipsec.conf': {
-        'router1': 'https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter1/ipsec.conf',
-        'router2': 'https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter2/ipsec.conf',
+        'router1': 'https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/router1/ipsec.conf',
+        'router2': 'https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/router2/ipsec.conf',
     },
     'ipsec.secrets': {
-        'router1': 'https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter1/ipsec.secrets',
-        'router2': 'https://raw.githubusercontent.com/acantril/learn-cantrill-io-labs/master/AWS_HYBRID_AdvancedVPN/OnPremRouter2/ipsec.secrets',
+        'router1': 'https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/router1/ipsec.secrets',
+        'router2': 'https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/router2/ipsec.secrets',
     },
 }
 
