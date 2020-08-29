@@ -1,22 +1,21 @@
 #!/usr/bin/env python
 
 import sys
-import requests
 import json
 import subprocess
 
 files_to_download = {
     'ipsec-vti.sh': {
-        'router1': 'https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/router1/ipsec-vti.sh',
-        'router2': 'https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/router2/ipsec-vti.sh',
+        'router1': 'ressources/router1/ipsec-vti.sh',
+        'router2': 'ressources/router2/ipsec-vti.sh',
     },
     'ipsec.conf': {
-        'router1': 'https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/router1/ipsec.conf',
-        'router2': 'https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/router2/ipsec.conf',
+        'router1': 'ressources/router1/ipsec.conf',
+        'router2': 'ressources/router2/ipsec.conf',
     },
     'ipsec.secrets': {
-        'router1': 'https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/router1/ipsec.secrets',
-        'router2': 'https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/router2/ipsec.secrets',
+        'router1': 'ressources/router1/ipsec.secrets',
+        'router2': 'ressources/router2/ipsec.secrets',
     },
 }
 
@@ -56,8 +55,6 @@ exit
 sudo reboot
         """
         }
-
-
 
 
 # terraform_output_file = "outputs.json"
@@ -108,9 +105,8 @@ def replace_values(string):
 cmds = ""
 for filename, values in files_to_download.items():
     for router, path in values.items():
-        res = requests.get(path)
-        res.raise_for_status()
-        output = replace_values(res.text)
+        res = open(path).read() 
+        output = replace_values(res)
         with open(f"{router}_{filename}", "w") as wf:
             wf.write(output)
             wf.write("\n")
@@ -129,3 +125,4 @@ for router in ["router1", "router2"]:
 
 print(cmds)
 print(bgp_config)
+
