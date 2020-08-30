@@ -1,5 +1,7 @@
 resource "aws_vpc" "a4l_aws" {
-  cidr_block = "10.16.0.0/16"
+  cidr_block           = "10.16.0.0/16"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
   tags = {
     Name = "A4L-AWS"
@@ -7,7 +9,9 @@ resource "aws_vpc" "a4l_aws" {
 }
 
 resource "aws_vpc" "onprem" {
-  cidr_block = "192.168.8.0/21"
+  cidr_block           = "192.168.8.0/21"
+  enable_dns_support   = true
+  enable_dns_hostnames = true
 
   tags = {
     Name = "ONPREM"
