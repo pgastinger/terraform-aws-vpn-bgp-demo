@@ -43,9 +43,7 @@ resource "aws_instance" "router" {
       "mkdir /home/ubuntu/demo_assets",
       "cd /home/ubuntu/demo_assets",
       "wget https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/51-eth1.yaml",
-      "wget https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/ffrouting-install.sh",
       "sudo chown ubuntu:ubuntu /home/ubuntu/demo_assets -R",
-      "sudo chmod +x /home/ubuntu/demo_assets/ffrouting-install.sh",
       "sudo cp /home/ubuntu/demo_assets/51-eth1.yaml /etc/netplan",
       "sudo netplan --debug apply"
     ]

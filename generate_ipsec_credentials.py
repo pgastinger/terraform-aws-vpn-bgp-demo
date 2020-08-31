@@ -121,7 +121,7 @@ for router in ["router1", "router2"]:
     public_ip = terraform_output[f"{router}_public_ip"]["value"]
     print(f"ssh -i my_keys ubuntu@{public_ip}")
     cmds += f"ssh -i my_keys ubuntu@{public_ip} 'sudo cp ~/demo_assets/ipsec* /etc/ && sudo chmod +x /etc/ipsec-vti.sh && sudo service ipsec restart && sleep 5 && sudo ipsec status'\n"
-    cmds += f"ssh -i my_keys ubuntu@{public_ip} 'sudo ./demo_assets/ffrouting-install.sh'\n"
+    cmds += f"ssh -i my_keys ubuntu@{public_ip} 'sudo snap install frr'\n"
 
 print(cmds)
 print(bgp_config)
