@@ -21,7 +21,7 @@ files_to_download = {
 
 bgp_configuration = {
         'router1': """
-sudo vtysh
+sudo frr.vtysh
 conf t
 frr defaults traditional
 router bgp 65016
@@ -38,7 +38,7 @@ exit
 sudo reboot
         """,
         'router2':"""
-sudo vtysh
+sudo frr.vtysh
 conf t
 frr defaults traditional
 router bgp 65016
