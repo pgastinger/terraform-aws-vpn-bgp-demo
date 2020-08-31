@@ -10,14 +10,19 @@ https://github.com/acantril/learn-cantrill-io-labs
 https://www.reddit.com/r/aws/comments/hjtq23/mini_project_implement_a_bgp_based_ha_dynamic/
 
 ### Differences to Adrians demo:
+
+**Disclaimer: This is just a proof of concept, there are a lot of things which can be improved!**
+
   - Terraform (very basic, at lot of room for improvements) instead of Cloudformation
   - works in every region
-  - no manual configuration (at least not much)
+  - no manual configuration (at least not much). A python script is used to convert the Terraform output into usable files.
   - no SSM yet, no VPCEs yet
   - use of latest Ubuntu (20.04) ami for the OnPrem routers
   - use of t2.miro for the OnPrem routers (because it is free)
   - installing frr using snap instead of compiling
   - most important point, this setup currently does not work (IPSEC and BGP connections are fine, looks like there is an issue between server and router onprem).
+  
+** I have no idea about what might be wrong and no more time to further investigate **
 
 ## How To
 
