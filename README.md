@@ -23,7 +23,7 @@ https://www.reddit.com/r/aws/comments/hjtq23/mini_project_implement_a_bgp_based_
   - most important point, this setup currently does not work (IPSEC and BGP connections are fine, looks like there is an issue between server and router onprem).
   **Update:** for the newly created ENI images, source/dest check was not disabled! 
   
-**I have no idea about what might be wrong and no more time to further investigate**
+**For now, in the Routers, the BGP routes are rejected ...**
 
 ## How To
 
