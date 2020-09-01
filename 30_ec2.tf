@@ -137,11 +137,13 @@ resource "aws_instance" "aws_ec2_b" {
 
 
 resource "aws_eip" "router1_eip" {
-  instance = aws_instance.router[0].id
-  vpc      = true
+  instance          = aws_instance.router[0].id
+  vpc               = true
+  source_dest_check = false
 }
 
 resource "aws_eip" "router2_eip" {
-  instance = aws_instance.router[1].id
-  vpc      = true
+  instance          = aws_instance.router[1].id
+  vpc               = true
+  source_dest_check = false
 }
