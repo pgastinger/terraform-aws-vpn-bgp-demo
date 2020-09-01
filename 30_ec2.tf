@@ -60,6 +60,7 @@ resource "aws_instance" "router" {
 resource "aws_network_interface" "router1_lan" {
   subnet_id       = aws_subnet.ONPREM-PRIVATE-1.id
   security_groups = [aws_security_group.onprem-sg.id]
+  source_dest_check = false
 
   attachment {
     instance     = aws_instance.router[0].id
@@ -70,6 +71,7 @@ resource "aws_network_interface" "router1_lan" {
 resource "aws_network_interface" "router2_lan" {
   subnet_id       = aws_subnet.ONPREM-PRIVATE-2.id
   security_groups = [aws_security_group.onprem-sg.id]
+  source_dest_check = false
 
   attachment {
     instance     = aws_instance.router[1].id
@@ -139,11 +141,9 @@ resource "aws_instance" "aws_ec2_b" {
 resource "aws_eip" "router1_eip" {
   instance          = aws_instance.router[0].id
   vpc               = true
-  source_dest_check = false
 }
 
 resource "aws_eip" "router2_eip" {
   instance          = aws_instance.router[1].id
   vpc               = true
-  source_dest_check = false
 }
