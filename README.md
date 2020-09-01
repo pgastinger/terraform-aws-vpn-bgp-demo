@@ -22,7 +22,7 @@ https://www.reddit.com/r/aws/comments/hjtq23/mini_project_implement_a_bgp_based_
   - installing frr using snap instead of compiling
   - most important point, this setup currently does not work (IPSEC and BGP connections are fine, looks like there is an issue between server and router onprem).
   
-** I have no idea about what might be wrong and no more time to further investigate **
+**I have no idea about what might be wrong and no more time to further investigate**
 
 ## How To
 
