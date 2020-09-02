@@ -19,7 +19,7 @@ https://www.reddit.com/r/aws/comments/hjtq23/mini_project_implement_a_bgp_based_
   - no SSM yet, no VPCEs yet
   - use of latest Ubuntu (20.04) ami for the OnPrem routers
   - use of t2.miro for the OnPrem routers (because it is free)
-  - ~~installing frr using snap instead of compiling~~ (Appearently, on the used AMI, the frr-snap can not set any route, using the frr from universe repo is working)
+  - ~~installing frr using snap instead of compiling~~ (Apparently, on the used AMI, the frr-snap can not set any route, using the frr from universe repo is working)
   **Update:** for the newly created ENI images, source/dest check was not disabled! This is a per ENI-setting, not an instance-setting ... 
   
 ## How To
