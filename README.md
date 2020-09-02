@@ -11,7 +11,7 @@ https://www.reddit.com/r/aws/comments/hjtq23/mini_project_implement_a_bgp_based_
 
 ### Differences to Adrians demo:
 
-**Disclaimer: This is just a proof of concept, there are a lot of things which can be improved!**
+**Disclaimer: This is just a working proof of concept, there are a lot of things to improve!**
 
   - Terraform (very basic, at lot of room for improvements) instead of Cloudformation
   - works in every region
@@ -20,9 +20,8 @@ https://www.reddit.com/r/aws/comments/hjtq23/mini_project_implement_a_bgp_based_
   - use of latest Ubuntu (20.04) ami for the OnPrem routers
   - use of t2.miro for the OnPrem routers (because it is free)
   - ~~installing frr using snap instead of compiling~~ (Appearently, on the used AMI, the frr-snap can not set any route, using the frr from universe repo is working)
-  **Update:** for the newly created ENI images, source/dest check was not disabled! 
+  **Update:** for the newly created ENI images, source/dest check was not disabled! This is a per ENI-setting, not an instance-setting ... 
   
-
 ## How To
 
 ### Clone repository
@@ -114,12 +113,10 @@ rerun this command to reinitialize your working directory. If you forget, other
 commands will detect it and remind you to do so if necessary.
 ```
 
-### Terraform apply
+### Terraform apply (approx 5min)
 
 ```
-root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# terraform apply
-data.aws_ami.app_ami: Refreshing state...
-root@v22019078674692622:/srv/terraform-aws-vpn-bgp-demo# terraform apply
+root@v22019078674692622:/srv/terraform-aws-vpn-bgp-demo# terraform apply 
 data.aws_availability_zones.available: Refreshing state...
 data.aws_ami.app_ami: Refreshing state...
 data.aws_ami.router_ami: Refreshing state...
@@ -181,25 +178,26 @@ router2_tunnel2_vgw_inside_address = 169.254.165.93/30
 ## Generate commands to write files ...
 ```
 root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# python generate_ipsec_credentials.py
-ssh -i my_keys ubuntu@18.156.133.105
-ssh -i my_keys ubuntu@18.192.82.101
-scp -i my_keys router1_ipsec-vti.sh ubuntu@18.156.133.105:~/demo_assets/ipsec-vti.sh
-scp -i my_keys router2_ipsec-vti.sh ubuntu@18.192.82.101:~/demo_assets/ipsec-vti.sh
-scp -i my_keys router1_ipsec.conf ubuntu@18.156.133.105:~/demo_assets/ipsec.conf
-scp -i my_keys router2_ipsec.conf ubuntu@18.192.82.101:~/demo_assets/ipsec.conf
-scp -i my_keys router1_ipsec.secrets ubuntu@18.156.133.105:~/demo_assets/ipsec.secrets
-scp -i my_keys router2_ipsec.secrets ubuntu@18.192.82.101:~/demo_assets/ipsec.secrets
-ssh -i my_keys ubuntu@18.156.133.105 'sudo cp ~/demo_assets/ipsec* /etc/ && sudo chmod +x /etc/ipsec-vti.sh && sudo service ipsec restart && sleep 5 && sudo ipsec status'
-ssh -i my_keys ubuntu@18.192.82.101 'sudo cp ~/demo_assets/ipsec* /etc/ && sudo chmod +x /etc/ipsec-vti.sh && sudo service ipsec restart && sleep 5 && sudo ipsec status'
+ssh-keyscan -H 52.29.157.95 >> ~/.ssh/known_hosts
+ssh-keyscan -H 3.124.77.121 >> ~/.ssh/known_hosts
+scp -i my_keys router1_ipsec-vti.sh ubuntu@52.29.157.95:~/demo_assets/ipsec-vti.sh
+scp -i my_keys router2_ipsec-vti.sh ubuntu@3.124.77.121:~/demo_assets/ipsec-vti.sh
+scp -i my_keys router1_ipsec.conf ubuntu@52.29.157.95:~/demo_assets/ipsec.conf
+scp -i my_keys router2_ipsec.conf ubuntu@3.124.77.121:~/demo_assets/ipsec.conf
+scp -i my_keys router1_ipsec.secrets ubuntu@52.29.157.95:~/demo_assets/ipsec.secrets
+scp -i my_keys router2_ipsec.secrets ubuntu@3.124.77.121:~/demo_assets/ipsec.secrets
+ssh -i my_keys ubuntu@52.29.157.95 'sudo cp ~/demo_assets/ipsec* /etc/ && sudo chmod +x /etc/ipsec-vti.sh && sudo service ipsec restart && sleep 5 && sudo ipsec status'
+ssh -i my_keys ubuntu@3.124.77.121 'sudo cp ~/demo_assets/ipsec* /etc/ && sudo chmod +x /etc/ipsec-vti.sh && sudo service ipsec restart && sleep 5 && sudo ipsec status'
 
+ssh -i my_keys ubuntu@3.124.77.121
 #router1 BGP configuration
 
 sudo vtysh
 conf t
 frr defaults traditional
 router bgp 65016
-neighbor 169.254.143.17 remote-as 64512
-neighbor 169.254.131.85 remote-as 64512
+neighbor 169.254.250.21 remote-as 64512
+neighbor 169.254.33.205 remote-as 64512
 no bgp ebgp-requires-policy
 address-family ipv4 unicast
 redistribute connected
@@ -210,14 +208,15 @@ wr
 exit
 ip r
 
+ssh -i my_keys ubuntu@52.29.157.95
 #router2 BGP configuration
 
 sudo vtysh
 conf t
 frr defaults traditional
 router bgp 65016
-neighbor 169.254.90.149 remote-as 64512
-neighbor 169.254.165.93 remote-as 64512
+neighbor 169.254.192.201 remote-as 64512
+neighbor 169.254.52.141 remote-as 64512
 no bgp ebgp-requires-policy
 address-family ipv4 unicast
 redistribute connected
@@ -232,56 +231,69 @@ ip r
 
 ## Execute commands (initial SSH-connection for host keys required)
 ```
-root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# scp -i my_keys router1_ipsec-vti.sh ubuntu@18.156.133.105:~/demo_assets/ipsec-vti.sh
-scp -i my_keys router2_ipsec-vti.sh ubuntu@18.192.82.101:~/demo_assets/ipsec-vti.sh
-scp -i my_keys router1_ipsec.conf ubuntu@18.156.133.105:~/demo_assets/ipsec.conf
-scp -i my_keys router2_ipsec.conf ubuntu@18.192.82.101:~/demo_assets/ipsec.conf
-scp -i my_keys router1_ipsec.secrets ubuntu@18.156.133.105:~/demo_assets/ipsec.secrets
-scp -i my_keys router2_ipsec.secrets ubuntu@18.192.82.101:~/demo_assets/ipsec.secrets
-router1_ipsec-vti.sh                                                                                                                                                                                                                         100% 1773   318.0KB/s   00:00
-root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# scp -i my_keys router2_ipsec-vti.sh ubuntu@18.192.82.101:~/demo_assets/ipsec-vti.sh
-router2_ipsec-vti.sh                                                                                                                                                                                                                         100% 1773   371.0KB/s   00:00
-root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# scp -i my_keys router1_ipsec.conf ubuntu@18.156.133.105:~/demo_assets/ipsec.conf
-router1_ipsec.conf                                                                                                                                                                                                                           100% 1733   355.8KB/s   00:00
-root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# scp -i my_keys router2_ipsec.conf ubuntu@18.192.82.101:~/demo_assets/ipsec.conf
-router2_ipsec.conf                                                                                                                                                                                                                           100% 1731   337.1KB/s   00:00
-root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# scp -i my_keys router1_ipsec.secrets ubuntu@18.156.133.105:~/demo_assets/ipsec.secrets
-router1_ipsec.secrets                                                                                                                                                                                                                        100%  340    68.5KB/s   00:00
-root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# scp -i my_keys router2_ipsec.secrets ubuntu@18.192.82.101:~/demo_assets/ipsec.secrets
-router2_ipsec.secrets                                                                                                                                                                                                                        100%  337    71.3KB/s   00:00                                         
-root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# ssh -i my_keys ubuntu@18.156.133.105 'sudo cp ~/demo_assets/ipsec* /etc/ && sudo chmod +x /etc/ipsec-vti.sh && sudo service ipsec restart && sleep 5 && sudo ipsec status'
+root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# ssh-keyscan -H 52.29.157.95 >> ~/.ssh/known_hosts
+ssh-keyscan -H 3.124.77.121 >> ~/.ssh/known_hosts
+scp -i my_keys router1_ipsec-vti.sh ubuntu@52.29.157.95:~/demo_assets/ipsec-vti.sh
+scp -i my_keys router2_ipsec-vti.sh ubuntu@3.124.77.121:~/demo_assets/ipsec-vti.sh
+scp -i my_keys router1_ipsec.conf ubuntu@52.29.157.95:~/demo_assets/ipsec.conf
+scp -i my_keys router2_ipsec.conf ubuntu@3.124.77.121:~/demo_assets/ipsec.conf
+scp -i my_keys router1_ipsec.secrets ubuntu@52.29.157.95:~/demo_assets/ipsec.secrets
+scp -i my_keys router2_ipsec.secrets ubuntu@3.124.77.121:~/demo_assets/ipsec.secrets
+# 52.29.157.95:22 SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.1
+# 52.29.157.95:22 SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.1
+# 52.29.157.95:22 SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.1
+root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# ssh-keyscan -H 3.124.77.121 >> ~/.ssh/known_hosts
+# 3.124.77.121:22 SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.1
+# 3.124.77.121:22 SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.1
+# 3.124.77.121:22 SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.1
+root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# scp -i my_keys router1_ipsec-vti.sh ubuntu@52.29.157.95:~/demo_assets/ipsec-vti.sh
+router1_ipsec-vti.sh                                                                                                                                                                                                                         100% 1773   329.3KB/s   00:00
+root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# scp -i my_keys router2_ipsec-vti.sh ubuntu@3.124.77.121:~/demo_assets/ipsec-vti.sh
+router2_ipsec-vti.sh                                                                                                                                                                                                                         100% 1775   262.9KB/s   00:00
+root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# scp -i my_keys router1_ipsec.conf ubuntu@52.29.157.95:~/demo_assets/ipsec.conf
+router1_ipsec.conf                                                                                                                                                                                                                           100% 1731   345.5KB/s   00:00
+root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# scp -i my_keys router2_ipsec.conf ubuntu@3.124.77.121:~/demo_assets/ipsec.conf
+router2_ipsec.conf                                                                                                                                                                                                                           100% 1729   349.8KB/s   00:00
+root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# scp -i my_keys router1_ipsec.secrets ubuntu@52.29.157.95:~/demo_assets/ipsec.secrets
+router1_ipsec.secrets                                                                                                                                                                                                                        100%  336    63.6KB/s   00:00
+root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# scp -i my_keys router2_ipsec.secrets ubuntu@3.124.77.121:~/demo_assets/ipsec.secrets
+router2_ipsec.secrets                                                                                                                                                                                                                        100%  336    68.1KB/s   00:00
+
+root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# ssh -i my_keys ubuntu@52.29.157.95 'sudo cp ~/demo_assets/ipsec* /etc/ && sudo chmod +x /etc/ipsec-vti.sh && sudo service ipsec restart && sleep 5 && sudo ipsec status'
 Security Associations (2 up, 0 connecting):
- AWS-VPC-GW2[2]: ESTABLISHED 5 seconds ago, 192.168.12.81[18.156.133.105]...35.156.73.97[35.156.73.97]
- AWS-VPC-GW2{1}:  INSTALLED, TUNNEL, reqid 2, ESP in UDP SPIs: ca56b13d_i c005f6e6_o
- AWS-VPC-GW2{1}:   0.0.0.0/0 === 0.0.0.0/0
- AWS-VPC-GW1[1]: ESTABLISHED 5 seconds ago, 192.168.12.81[18.156.133.105]...18.196.158.241[18.196.158.241]
- AWS-VPC-GW1{2}:  INSTALLED, TUNNEL, reqid 1, ESP in UDP SPIs: c0f43e04_i c566fe90_o
- AWS-VPC-GW1{2}:   0.0.0.0/0 === 0.0.0.0/0
-root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# ssh -i my_keys ubuntu@18.192.82.101 'sudo cp ~/demo_assets/ipsec* /etc/ && sudo chmod +x /etc/ipsec-vti.sh && sudo service ipsec restart && sleep 5 && sudo ipsec status'
-Security Associations (2 up, 0 connecting):
- AWS-VPC-GW2[2]: ESTABLISHED 5 seconds ago, 192.168.12.175[18.192.82.101]...52.29.8.251[52.29.8.251]
- AWS-VPC-GW2{2}:  INSTALLED, TUNNEL, reqid 2, ESP in UDP SPIs: c05ef8fc_i ce45510b_o
+ AWS-VPC-GW2[2]: ESTABLISHED 5 seconds ago, 192.168.12.209[52.29.157.95]...35.157.12.139[35.157.12.139]
+ AWS-VPC-GW2{2}:  INSTALLED, TUNNEL, reqid 2, ESP in UDP SPIs: ca2efc60_i cb3ee7bc_o
  AWS-VPC-GW2{2}:   0.0.0.0/0 === 0.0.0.0/0
- AWS-VPC-GW1[1]: ESTABLISHED 5 seconds ago, 192.168.12.175[18.192.82.101]...35.158.230.131[35.158.230.131]
- AWS-VPC-GW1{1}:  INSTALLED, TUNNEL, reqid 1, ESP in UDP SPIs: cbfdc9a5
+ AWS-VPC-GW1[1]: ESTABLISHED 5 seconds ago, 192.168.12.209[52.29.157.95]...18.158.161.20[18.158.161.20]
+ AWS-VPC-GW1{1}:  INSTALLED, TUNNEL, reqid 1, ESP in UDP SPIs: c97bc3a7_i cb0595c0_o
+ AWS-VPC-GW1{1}:   0.0.0.0/0 === 0.0.0.0/0
+root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# ssh -i my_keys ubuntu@3.124.77.121 'sudo cp ~/demo_assets/ipsec* /etc/ && sudo chmod +x /etc/ipsec-vti.sh && sudo service ipsec restart && sleep 5 && sudo ipsec status'
+Security Associations (2 up, 0 connecting):
+ AWS-VPC-GW2[2]: ESTABLISHED 5 seconds ago, 192.168.12.79[3.124.77.121]...35.158.81.200[35.158.81.200]
+ AWS-VPC-GW2{2}:  INSTALLED, TUNNEL, reqid 1, ESP in UDP SPIs: ccbc60a4_i c0a360ec_o
+ AWS-VPC-GW2{2}:   0.0.0.0/0 === 0.0.0.0/0
+ AWS-VPC-GW1[1]: ESTABLISHED 5 seconds ago, 192.168.12.79[3.124.77.121]...18.196.98.234[18.196.98.234]
+ AWS-VPC-GW1{1}:  INSTALLED, TUNNEL, reqid 2, ESP in UDP SPIs: c3c766e1_i c7736478_o
+ AWS-VPC-GW1{1}:   0.0.0.0/0 === 0.0.0.0/0
+
 ```
 
 ## BGP
 ```
-root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# ssh -i my_keys ubuntu@18.156.133.105
+root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# ssh -i my_keys ubuntu@3.124.77.121
 Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1021-aws x86_64)
 
  * Documentation:  https://help.ubuntu.com
  * Management:     https://landscape.canonical.com
  * Support:        https://ubuntu.com/advantage
 
-  System information as of Wed Sep  2 19:11:04 UTC 2020
+  System information as of Wed Sep  2 19:32:55 UTC 2020
 
-  System load:  0.02              Users logged in:       0
-  Usage of /:   18.8% of 7.69GB   IPv4 address for eth0: 192.168.12.81
-  Memory usage: 23%               IPv4 address for eth1: 192.168.10.191
-  Swap usage:   0%                IPv4 address for vti1: 169.254.143.18
-  Processes:    109               IPv4 address for vti2: 169.254.131.86
+  System load:  0.19              Users logged in:       0
+  Usage of /:   18.8% of 7.69GB   IPv4 address for eth0: 192.168.12.79
+  Memory usage: 24%               IPv4 address for eth1: 192.168.11.18
+  Swap usage:   0%                IPv4 address for vti1: 169.254.192.202
+  Processes:    109               IPv4 address for vti2: 169.254.52.142
 
 
 36 updates can be installed immediately.
@@ -289,13 +301,13 @@ Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1021-aws x86_64)
 To see these additional updates run: apt list --upgradable
 
 
-Last login: Wed Sep  2 19:08:06 2020 from 152.89.104.249
-ubuntu@ip-192-168-12-81:~$ sudo vtysh
+Last login: Wed Sep  2 19:24:17 2020 from 152.89.104.249
+ubuntu@ip-192-168-12-79:~$ sudo vtysh
 conf t
 frr defaults traditional
 router bgp 65016
-neighbor 169.254.143.17 remote-as 64512
-neighbor 169.254.131.85 remote-as 64512
+neighbor 169.254.192.201 remote-as 64512
+neighbor 169.254.52.141 remote-as 64512
 no bgp ebgp-requires-policy
 address-family ipv4 unicast
 redistribute connected
@@ -303,133 +315,43 @@ redistribute connected
 Hello, this is FRRouting (version 7.2.1).
 Copyright 1996-2005 Kunihiro Ishiguro, et al.
 
-ip-192-168-12-81# conf t
-ip-192-168-12-81(config)# frr defaults traditional
-ip-192-168-12-81(config)# router bgp 65016
-ip-192-168-12-81(config-router)# neighbor 169.254.143.17 remote-as 64512
-ip-192-168-12-81(config-router)# neighbor 169.254.131.85 remote-as 64512
-ip-192-168-12-81(config-router)# no bgp ebgp-requires-policy
-ip-192-168-12-81(config-router)# address-family ipv4 unicast
-ip-192-168-12-81(config-router-af)# redistribute connected
-ip-192-168-12-81(config-router-af)# exit-address-family
-ip-192-168-12-81(config-router)# exit
-ip-192-168-12-81(config)# exit
-ip-192-168-12-81# wr
-Note: this version of vtysh never writes vtysh.conf
-Building Configuration...
-Integrated configuration saved to /etc/frr/frr.conf
-[OK]
-ip-192-168-12-81# exit
-ubuntu@ip-192-168-12-81:~$ ip r
-default via 192.168.12.1 dev eth0 proto dhcp src 192.168.12.81 metric 100
-10.16.0.0/16 proto bgp metric 20
-        nexthop via 169.254.131.85 dev vti2 weight 1
-        nexthop via 169.254.143.17 dev vti1 weight 1
-169.254.131.84/30 dev vti2 proto kernel scope link src 169.254.131.86
-169.254.143.16/30 dev vti1 proto kernel scope link src 169.254.143.18
-192.168.10.0/24 dev eth1 proto kernel scope link src 192.168.10.191
-192.168.12.0/24 dev eth0 proto kernel scope link src 192.168.12.81
-192.168.12.1 dev eth0 proto dhcp scope link src 192.168.12.81 metric 100
-
-```
-## BGP Commands
-```
-ip-192-168-12-48# show ip bgp
-BGP table version is 3, local router ID is 192.168.12.48, vrf id 0
-Default local pref 100, local AS 65016
-Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
-               i internal, r RIB-failure, S Stale, R Removed
-Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
-Origin codes:  i - IGP, e - EGP, ? - incomplete
-
-   Network          Next Hop            Metric LocPrf Weight Path
-*= 10.16.0.0/16     169.254.191.169        100             0 64512 i
-*>                  169.254.189.241        100             0 64512 i
-*> 192.168.10.0/24  0.0.0.0                  0         32768 ?
-*> 192.168.12.0/24  0.0.0.0                  0         32768 ?
-
-ip-192-168-12-243# show ip bgp
-BGP table version is 3, local router ID is 192.168.12.243, vrf id 0
-Default local pref 100, local AS 65016
-Status codes:  s suppressed, d damped, h history, * valid, > best, = multipath,
-               i internal, r RIB-failure, S Stale, R Removed
-Nexthop codes: @NNN nexthop's vrf id, < announce-nh-self
-Origin codes:  i - IGP, e - EGP, ? - incomplete
-
-   Network          Next Hop            Metric LocPrf Weight Path
-*= 10.16.0.0/16     169.254.170.5          100             0 64512 i
-*>                  169.254.35.65          100             0 64512 i
-*> 192.168.11.0/24  0.0.0.0                  0         32768 ?
-*> 192.168.12.0/24  0.0.0.0                  0         32768 ?
-
-root@v22019078674692622:~/terraform-aws-vpn-bgp-demo# ssh -i my_keys ubuntu@18.192.82.101
-Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-1021-aws x86_64)
-
- * Documentation:  https://help.ubuntu.com
- * Management:     https://landscape.canonical.com
- * Support:        https://ubuntu.com/advantage
-
-  System information as of Wed Sep  2 19:11:32 UTC 2020
-
-  System load:  0.02              Users logged in:       0
-  Usage of /:   18.8% of 7.69GB   IPv4 address for eth0: 192.168.12.175
-  Memory usage: 22%               IPv4 address for eth1: 192.168.11.74
-  Swap usage:   0%                IPv4 address for vti1: 169.254.90.150
-  Processes:    108               IPv4 address for vti2: 169.254.165.94
-
-
-36 updates can be installed immediately.
-15 of these updates are security updates.
-To see these additional updates run: apt list --upgradable
-
-
-Last login: Wed Sep  2 19:07:38 2020 from 152.89.104.249
-ubuntu@ip-192-168-12-175:~$ sudo vtysh
-conf t
-frr defaults traditional
-router bgp 65016
-neighbor 169.254.90.149 remote-as 64512
-neighbor 169.254.165.93 remote-as 64512
-no bgp ebgp-requires-policy
-address-family ipv4 unicast
-redistribute connected
-exit-address-family
-exit
-exit
-wr
-exit
-ip r
-
-Hello, this is FRRouting (version 7.2.1).
-Copyright 1996-2005 Kunihiro Ishiguro, et al.
-
-ip-192-168-12-175# conf t
-ip-192-168-12-175(config)# frr defaults traditional
-ip-192-168-12-175(config)# router bgp 65016
-ip-192-168-12-175(config-router)# neighbor 169.254.90.149 remote-as 64512
-ip-192-168-12-175(config-router)# neighbor 169.254.165.93 remote-as 64512
-ip-192-168-12-175(config-router)# no bgp ebgp-requires-policy
-ip-192-168-12-175(config-router)# address-family ipv4 unicast
-ip-192-168-12-175(config-router-af)# redistribute connected
-ip-192-168-12-175(config-router-af)# exit-address-family
-ip-192-168-12-175(config-router)# exit
-ip-192-168-12-175(config)# exit
-ip-192-168-12-175# wr
+ip-192-168-12-79# conf t
+ip-192-168-12-79(config)# frr defaults traditional
+ip-192-168-12-79(config)# router bgp 65016
+ip-192-168-12-79(config-router)# neighbor 169.254.192.201 remote-as 64512
+ip-192-168-12-79(config-router)# neighbor 169.254.52.141 remote-as 64512
+ip-192-168-12-79(config-router)# no bgp ebgp-requires-policy
+ip-192-168-12-79(config-router)# address-family ipv4 unicast
+ip-192-168-12-79(config-router-af)# redistribute connected
+ip-192-168-12-79(config-router-af)# exit-address-family
+ip-192-168-12-79(config-router)# exit
+ip-192-168-12-79(config)# exit
+ip-192-168-12-79# wr
 Note: this version of vtysh never writes vtysh.conf
 Building Configuration...
 Warning: /etc/frr/frr.conf.sav unlink failed
 Integrated configuration saved to /etc/frr/frr.conf
 [OK]
-ip-192-168-12-175# exit
-ubuntu@ip-192-168-12-175:~$ ip r
-default via 192.168.12.1 dev eth0 proto dhcp src 192.168.12.175 metric 100
-169.254.90.148/30 dev vti1 proto kernel scope link src 169.254.90.150
-169.254.165.92/30 dev vti2 proto kernel scope link src 169.254.165.94
-192.168.11.0/24 dev eth1 proto kernel scope link src 192.168.11.74
-192.168.12.0/24 dev eth0 proto kernel scope link src 192.168.12.175
-192.168.12.1 dev eth0 proto dhcp scope link src 192.168.12.175 metric 100
-```
+ip-192-168-12-79# exit
+ubuntu@ip-192-168-12-79:~$ ip r
+default via 192.168.12.1 dev eth0 proto dhcp src 192.168.12.79 metric 100
+169.254.52.140/30 dev vti2 proto kernel scope link src 169.254.52.142
+169.254.192.200/30 dev vti1 proto kernel scope link src 169.254.192.202
+192.168.11.0/24 dev eth1 proto kernel scope link src 192.168.11.18
+192.168.12.0/24 dev eth0 proto kernel scope link src 192.168.12.79
+192.168.12.1 dev eth0 proto dhcp scope link src 192.168.12.79 metric 100
+ubuntu@ip-192-168-12-79:~$ ip r
+default via 192.168.12.1 dev eth0 proto dhcp src 192.168.12.79 metric 100
+10.16.0.0/16 proto bgp metric 20
+        nexthop via 169.254.52.141 dev vti2 weight 1
+        nexthop via 169.254.192.201 dev vti1 weight 1
+169.254.52.140/30 dev vti2 proto kernel scope link src 169.254.52.142
+169.254.192.200/30 dev vti1 proto kernel scope link src 169.254.192.202
+192.168.11.0/24 dev eth1 proto kernel scope link src 192.168.11.18
+192.168.12.0/24 dev eth0 proto kernel scope link src 192.168.12.79
+192.168.12.1 dev eth0 proto dhcp scope link src 192.168.12.79 metric 100
 
+```
 
 ## Ping
 - Connect to OnPrem servers via routers and ssh-agent-forwarding
