@@ -39,7 +39,9 @@ resource "aws_instance" "router" {
 
   provisioner "remote-exec" {
     inline = [
-      "sudo apt update && sudo apt install -y strongswan wget",
+      "sudo apt update && sudo apt install -y strongswan wget frr",
+      "sudo sed -i 's/bgpd=no/bgpd=yes/g' /etc/frr/daemons",
+      "sudo service frr restart",
       "mkdir /home/ubuntu/demo_assets",
       "cd /home/ubuntu/demo_assets",
       "wget https://raw.githubusercontent.com/pgastinger/terraform-aws-vpn-bgp-demo/master/ressources/51-eth1.yaml",
@@ -58,8 +60,8 @@ resource "aws_instance" "router" {
 }
 
 resource "aws_network_interface" "router1_lan" {
-  subnet_id       = aws_subnet.ONPREM-PRIVATE-1.id
-  security_groups = [aws_security_group.onprem-sg.id]
+  subnet_id         = aws_subnet.ONPREM-PRIVATE-1.id
+  security_groups   = [aws_security_group.onprem-sg.id]
   source_dest_check = false
 
   attachment {
@@ -69,8 +71,8 @@ resource "aws_network_interface" "router1_lan" {
 }
 
 resource "aws_network_interface" "router2_lan" {
-  subnet_id       = aws_subnet.ONPREM-PRIVATE-2.id
-  security_groups = [aws_security_group.onprem-sg.id]
+  subnet_id         = aws_subnet.ONPREM-PRIVATE-2.id
+  security_groups   = [aws_security_group.onprem-sg.id]
   source_dest_check = false
 
   attachment {
@@ -139,11 +141,11 @@ resource "aws_instance" "aws_ec2_b" {
 
 
 resource "aws_eip" "router1_eip" {
-  instance          = aws_instance.router[0].id
-  vpc               = true
+  instance = aws_instance.router[0].id
+  vpc      = true
 }
 
 resource "aws_eip" "router2_eip" {
-  instance          = aws_instance.router[1].id
-  vpc               = true
+  instance = aws_instance.router[1].id
+  vpc      = true
 }

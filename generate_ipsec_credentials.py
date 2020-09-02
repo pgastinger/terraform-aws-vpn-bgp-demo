@@ -21,7 +21,7 @@ files_to_download = {
 
 bgp_configuration = {
         'router1': """
-sudo frr.vtysh
+sudo vtysh
 conf t
 frr defaults traditional
 router bgp 65016
@@ -35,10 +35,10 @@ exit
 exit
 wr
 exit
-sudo reboot
+ip r
         """,
         'router2':"""
-sudo frr.vtysh
+sudo vtysh
 conf t
 frr defaults traditional
 router bgp 65016
@@ -52,7 +52,7 @@ exit
 exit
 wr
 exit
-sudo reboot
+ip r
         """
         }
 
@@ -69,36 +69,40 @@ if len(terraform_output) == 0:
 
 
 def replace_values(string):
-    string = string.replace("ROUTER1_PRIVATE_IP", terraform_output["router1_private_ip"]["value"])
-    string = string.replace("ROUTER2_PRIVATE_IP", terraform_output["router2_private_ip"]["value"])
-    string = string.replace("CONN1_TUNNEL1_ONPREM_OUTSIDE_IP", terraform_output["router1_public_ip"]["value"])
-    string = string.replace("CONN1_TUNNEL2_ONPREM_OUTSIDE_IP", terraform_output["router1_public_ip"]["value"])
-    string = string.replace("CONN2_TUNNEL1_ONPREM_OUTSIDE_IP", terraform_output["router2_public_ip"]["value"])
-    string = string.replace("CONN2_TUNNEL2_ONPREM_OUTSIDE_IP", terraform_output["router2_public_ip"]["value"])
-    string = string.replace("CONN1_TUNNEL1_AWS_OUTSIDE_IP", terraform_output["router1_tunnel1_address"]["value"])
-    string = string.replace("CONN1_TUNNEL2_AWS_OUTSIDE_IP", terraform_output["router1_tunnel2_address"]["value"])
-    string = string.replace("CONN1_TUNNEL1_PresharedKey", terraform_output["router1_tunnel1_preshared_key"]["value"])
-    string = string.replace("CONN1_TUNNEL2_PresharedKey", terraform_output["router1_tunnel2_preshared_key"]["value"])
-    string = string.replace("CONN2_TUNNEL1_AWS_OUTSIDE_IP", terraform_output["router2_tunnel1_address"]["value"])
-    string = string.replace("CONN2_TUNNEL2_AWS_OUTSIDE_IP", terraform_output["router2_tunnel2_address"]["value"])
-    string = string.replace("CONN2_TUNNEL1_PresharedKey", terraform_output["router2_tunnel1_preshared_key"]["value"])
-    string = string.replace("CONN2_TUNNEL2_PresharedKey", terraform_output["router2_tunnel2_preshared_key"]["value"])
-    string = string.replace("CONN1_TUNNEL1_ONPREM_INSIDE_IP",
+    try:
+        string = string.replace("ROUTER1_PRIVATE_IP", terraform_output["router1_private_ip"]["value"])
+        string = string.replace("ROUTER2_PRIVATE_IP", terraform_output["router2_private_ip"]["value"])
+        string = string.replace("CONN1_TUNNEL1_ONPREM_OUTSIDE_IP", terraform_output["router1_public_ip"]["value"])
+        string = string.replace("CONN1_TUNNEL2_ONPREM_OUTSIDE_IP", terraform_output["router1_public_ip"]["value"])
+        string = string.replace("CONN2_TUNNEL1_ONPREM_OUTSIDE_IP", terraform_output["router2_public_ip"]["value"])
+        string = string.replace("CONN2_TUNNEL2_ONPREM_OUTSIDE_IP", terraform_output["router2_public_ip"]["value"])
+        string = string.replace("CONN1_TUNNEL1_AWS_OUTSIDE_IP", terraform_output["router1_tunnel1_address"]["value"])
+        string = string.replace("CONN1_TUNNEL2_AWS_OUTSIDE_IP", terraform_output["router1_tunnel2_address"]["value"])
+        string = string.replace("CONN1_TUNNEL1_PresharedKey", terraform_output["router1_tunnel1_preshared_key"]["value"])
+        string = string.replace("CONN1_TUNNEL2_PresharedKey", terraform_output["router1_tunnel2_preshared_key"]["value"])
+        string = string.replace("CONN2_TUNNEL1_AWS_OUTSIDE_IP", terraform_output["router2_tunnel1_address"]["value"])
+        string = string.replace("CONN2_TUNNEL2_AWS_OUTSIDE_IP", terraform_output["router2_tunnel2_address"]["value"])
+        string = string.replace("CONN2_TUNNEL1_PresharedKey", terraform_output["router2_tunnel1_preshared_key"]["value"])
+        string = string.replace("CONN2_TUNNEL2_PresharedKey", terraform_output["router2_tunnel2_preshared_key"]["value"])
+        string = string.replace("CONN1_TUNNEL1_ONPREM_INSIDE_IP",
                             terraform_output["router1_tunnel1_cgw_inside_address"]["value"])
-    string = string.replace("CONN1_TUNNEL1_AWS_INSIDE_IP",
+        string = string.replace("CONN1_TUNNEL1_AWS_INSIDE_IP",
                             terraform_output["router1_tunnel1_vgw_inside_address"]["value"])
-    string = string.replace("CONN1_TUNNEL2_ONPREM_INSIDE_IP",
+        string = string.replace("CONN1_TUNNEL2_ONPREM_INSIDE_IP",
                             terraform_output["router1_tunnel2_cgw_inside_address"]["value"])
-    string = string.replace("CONN1_TUNNEL2_AWS_INSIDE_IP",
+        string = string.replace("CONN1_TUNNEL2_AWS_INSIDE_IP",
                             terraform_output["router1_tunnel2_vgw_inside_address"]["value"])
-    string = string.replace("CONN2_TUNNEL1_ONPREM_INSIDE_IP",
+        string = string.replace("CONN2_TUNNEL1_ONPREM_INSIDE_IP",
                             terraform_output["router2_tunnel1_cgw_inside_address"]["value"])
-    string = string.replace("CONN2_TUNNEL1_AWS_INSIDE_IP",
+        string = string.replace("CONN2_TUNNEL1_AWS_INSIDE_IP",
                             terraform_output["router2_tunnel1_vgw_inside_address"]["value"])
-    string = string.replace("CONN2_TUNNEL2_ONPREM_INSIDE_IP",
+        string = string.replace("CONN2_TUNNEL2_ONPREM_INSIDE_IP",
                             terraform_output["router2_tunnel2_cgw_inside_address"]["value"])
-    string = string.replace("CONN2_TUNNEL2_AWS_INSIDE_IP",
+        string = string.replace("CONN2_TUNNEL2_AWS_INSIDE_IP",
                             terraform_output["router2_tunnel2_vgw_inside_address"]["value"])
+    except:
+        print("Error replacing values")
+        sys.exit()
     return string
 
 
@@ -117,11 +121,11 @@ for filename, values in files_to_download.items():
 
 bgp_config = ""
 for router in ["router1", "router2"]:
+    bgp_config += f"ssh -i my_keys ubuntu@{public_ip}\n"
     bgp_config += f"#{router} BGP configuration\n"+replace_values(bgp_configuration[router]).replace("/30","")+"\n"
     public_ip = terraform_output[f"{router}_public_ip"]["value"]
-    print(f"ssh -i my_keys ubuntu@{public_ip}")
+    print(f"ssh-keyscan -H {public_ip} >> ~/.ssh/known_hosts")
     cmds += f"ssh -i my_keys ubuntu@{public_ip} 'sudo cp ~/demo_assets/ipsec* /etc/ && sudo chmod +x /etc/ipsec-vti.sh && sudo service ipsec restart && sleep 5 && sudo ipsec status'\n"
-    cmds += f"ssh -i my_keys ubuntu@{public_ip} 'sudo snap install frr'\n"
 
 print(cmds)
 print(bgp_config)
