@@ -1,0 +1,195 @@
+digraph {
+	compound = "true"
+	newrank = "true"
+	subgraph "root" {
+		"[root] aws_customer_gateway.router1 (expand)" [label = "aws_customer_gateway.router1", shape = "box"]
+		"[root] aws_customer_gateway.router2 (expand)" [label = "aws_customer_gateway.router2", shape = "box"]
+		"[root] aws_ec2_transit_gateway.tgw (expand)" [label = "aws_ec2_transit_gateway.tgw", shape = "box"]
+		"[root] aws_ec2_transit_gateway_vpc_attachment.tgw_attach (expand)" [label = "aws_ec2_transit_gateway_vpc_attachment.tgw_attach", shape = "box"]
+		"[root] aws_eip.router1_eip (expand)" [label = "aws_eip.router1_eip", shape = "box"]
+		"[root] aws_eip.router2_eip (expand)" [label = "aws_eip.router2_eip", shape = "box"]
+		"[root] aws_iam_instance_profile.ec2_profile (expand)" [label = "aws_iam_instance_profile.ec2_profile", shape = "box"]
+		"[root] aws_iam_role.ssm_role (expand)" [label = "aws_iam_role.ssm_role", shape = "box"]
+		"[root] aws_iam_role_policy_attachment.ssm_attach (expand)" [label = "aws_iam_role_policy_attachment.ssm_attach", shape = "box"]
+		"[root] aws_instance.aws_ec2_a (expand)" [label = "aws_instance.aws_ec2_a", shape = "box"]
+		"[root] aws_instance.aws_ec2_b (expand)" [label = "aws_instance.aws_ec2_b", shape = "box"]
+		"[root] aws_instance.router (expand)" [label = "aws_instance.router", shape = "box"]
+		"[root] aws_instance.server1 (expand)" [label = "aws_instance.server1", shape = "box"]
+		"[root] aws_instance.server2 (expand)" [label = "aws_instance.server2", shape = "box"]
+		"[root] aws_internet_gateway.igw_aws (expand)" [label = "aws_internet_gateway.igw_aws", shape = "box"]
+		"[root] aws_internet_gateway.igw_onprem (expand)" [label = "aws_internet_gateway.igw_onprem", shape = "box"]
+		"[root] aws_key_pair.my_pub_key (expand)" [label = "aws_key_pair.my_pub_key", shape = "box"]
+		"[root] aws_network_interface.router1_lan (expand)" [label = "aws_network_interface.router1_lan", shape = "box"]
+		"[root] aws_network_interface.router2_lan (expand)" [label = "aws_network_interface.router2_lan", shape = "box"]
+		"[root] aws_route_table.aws-rt (expand)" [label = "aws_route_table.aws-rt", shape = "box"]
+		"[root] aws_route_table.onprem-private-subnet-1-route-table (expand)" [label = "aws_route_table.onprem-private-subnet-1-route-table", shape = "box"]
+		"[root] aws_route_table.onprem-private-subnet-2-route-table (expand)" [label = "aws_route_table.onprem-private-subnet-2-route-table", shape = "box"]
+		"[root] aws_route_table.onprem-public-route-table (expand)" [label = "aws_route_table.onprem-public-route-table", shape = "box"]
+		"[root] aws_route_table_association.aws-subnet-A (expand)" [label = "aws_route_table_association.aws-subnet-A", shape = "box"]
+		"[root] aws_route_table_association.aws-subnet-B (expand)" [label = "aws_route_table_association.aws-subnet-B", shape = "box"]
+		"[root] aws_route_table_association.onprem-private-subnet-1-route-table-attach (expand)" [label = "aws_route_table_association.onprem-private-subnet-1-route-table-attach", shape = "box"]
+		"[root] aws_route_table_association.onprem-private-subnet-2-route-table-attach (expand)" [label = "aws_route_table_association.onprem-private-subnet-2-route-table-attach", shape = "box"]
+		"[root] aws_route_table_association.onprem-public-subnet (expand)" [label = "aws_route_table_association.onprem-public-subnet", shape = "box"]
+		"[root] aws_security_group.aws-sg (expand)" [label = "aws_security_group.aws-sg", shape = "box"]
+		"[root] aws_security_group.onprem-sg (expand)" [label = "aws_security_group.onprem-sg", shape = "box"]
+		"[root] aws_ssm_activation.ssm_activation (expand)" [label = "aws_ssm_activation.ssm_activation", shape = "box"]
+		"[root] aws_subnet.ONPREM-PRIVATE-1 (expand)" [label = "aws_subnet.ONPREM-PRIVATE-1", shape = "box"]
+		"[root] aws_subnet.ONPREM-PRIVATE-2 (expand)" [label = "aws_subnet.ONPREM-PRIVATE-2", shape = "box"]
+		"[root] aws_subnet.ONPREM-PUBLIC (expand)" [label = "aws_subnet.ONPREM-PUBLIC", shape = "box"]
+		"[root] aws_subnet.sn-aws-private-A (expand)" [label = "aws_subnet.sn-aws-private-A", shape = "box"]
+		"[root] aws_subnet.sn-aws-private-B (expand)" [label = "aws_subnet.sn-aws-private-B", shape = "box"]
+		"[root] aws_vpc.a4l_aws (expand)" [label = "aws_vpc.a4l_aws", shape = "box"]
+		"[root] aws_vpc.onprem (expand)" [label = "aws_vpc.onprem", shape = "box"]
+		"[root] aws_vpn_connection.A4LTGW_R1 (expand)" [label = "aws_vpn_connection.A4LTGW_R1", shape = "box"]
+		"[root] aws_vpn_connection.A4LTGW_R2 (expand)" [label = "aws_vpn_connection.A4LTGW_R2", shape = "box"]
+		"[root] data.aws_ami.app_ami (expand)" [label = "data.aws_ami.app_ami", shape = "box"]
+		"[root] data.aws_ami.router_ami (expand)" [label = "data.aws_ami.router_ami", shape = "box"]
+		"[root] data.aws_availability_zones.available (expand)" [label = "data.aws_availability_zones.available", shape = "box"]
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"]" [label = "provider[\"registry.terraform.io/hashicorp/aws\"]", shape = "diamond"]
+		"[root] aws_customer_gateway.router1 (expand)" -> "[root] aws_eip.router1_eip (expand)"
+		"[root] aws_customer_gateway.router2 (expand)" -> "[root] aws_eip.router2_eip (expand)"
+		"[root] aws_ec2_transit_gateway.tgw (expand)" -> "[root] provider[\"registry.terraform.io/hashicorp/aws\"]"
+		"[root] aws_ec2_transit_gateway_vpc_attachment.tgw_attach (expand)" -> "[root] aws_ec2_transit_gateway.tgw (expand)"
+		"[root] aws_ec2_transit_gateway_vpc_attachment.tgw_attach (expand)" -> "[root] aws_subnet.sn-aws-private-A (expand)"
+		"[root] aws_ec2_transit_gateway_vpc_attachment.tgw_attach (expand)" -> "[root] aws_subnet.sn-aws-private-B (expand)"
+		"[root] aws_eip.router1_eip (expand)" -> "[root] aws_instance.router (expand)"
+		"[root] aws_eip.router2_eip (expand)" -> "[root] aws_instance.router (expand)"
+		"[root] aws_iam_instance_profile.ec2_profile (expand)" -> "[root] aws_iam_role.ssm_role (expand)"
+		"[root] aws_iam_role.ssm_role (expand)" -> "[root] provider[\"registry.terraform.io/hashicorp/aws\"]"
+		"[root] aws_iam_role_policy_attachment.ssm_attach (expand)" -> "[root] aws_iam_role.ssm_role (expand)"
+		"[root] aws_instance.aws_ec2_a (expand)" -> "[root] aws_iam_instance_profile.ec2_profile (expand)"
+		"[root] aws_instance.aws_ec2_a (expand)" -> "[root] aws_key_pair.my_pub_key (expand)"
+		"[root] aws_instance.aws_ec2_a (expand)" -> "[root] aws_security_group.aws-sg (expand)"
+		"[root] aws_instance.aws_ec2_a (expand)" -> "[root] aws_subnet.sn-aws-private-A (expand)"
+		"[root] aws_instance.aws_ec2_a (expand)" -> "[root] data.aws_ami.app_ami (expand)"
+		"[root] aws_instance.aws_ec2_b (expand)" -> "[root] aws_iam_instance_profile.ec2_profile (expand)"
+		"[root] aws_instance.aws_ec2_b (expand)" -> "[root] aws_key_pair.my_pub_key (expand)"
+		"[root] aws_instance.aws_ec2_b (expand)" -> "[root] aws_security_group.aws-sg (expand)"
+		"[root] aws_instance.aws_ec2_b (expand)" -> "[root] aws_subnet.sn-aws-private-B (expand)"
+		"[root] aws_instance.aws_ec2_b (expand)" -> "[root] data.aws_ami.app_ami (expand)"
+		"[root] aws_instance.router (expand)" -> "[root] aws_iam_instance_profile.ec2_profile (expand)"
+		"[root] aws_instance.router (expand)" -> "[root] aws_key_pair.my_pub_key (expand)"
+		"[root] aws_instance.router (expand)" -> "[root] aws_security_group.onprem-sg (expand)"
+		"[root] aws_instance.router (expand)" -> "[root] aws_subnet.ONPREM-PUBLIC (expand)"
+		"[root] aws_instance.router (expand)" -> "[root] data.aws_ami.router_ami (expand)"
+		"[root] aws_instance.router (expand)" -> "[root] provisioner.remote-exec"
+		"[root] aws_instance.server1 (expand)" -> "[root] aws_iam_instance_profile.ec2_profile (expand)"
+		"[root] aws_instance.server1 (expand)" -> "[root] aws_key_pair.my_pub_key (expand)"
+		"[root] aws_instance.server1 (expand)" -> "[root] aws_security_group.onprem-sg (expand)"
+		"[root] aws_instance.server1 (expand)" -> "[root] aws_subnet.ONPREM-PRIVATE-1 (expand)"
+		"[root] aws_instance.server1 (expand)" -> "[root] data.aws_ami.app_ami (expand)"
+		"[root] aws_instance.server2 (expand)" -> "[root] aws_iam_instance_profile.ec2_profile (expand)"
+		"[root] aws_instance.server2 (expand)" -> "[root] aws_key_pair.my_pub_key (expand)"
+		"[root] aws_instance.server2 (expand)" -> "[root] aws_security_group.onprem-sg (expand)"
+		"[root] aws_instance.server2 (expand)" -> "[root] aws_subnet.ONPREM-PRIVATE-2 (expand)"
+		"[root] aws_instance.server2 (expand)" -> "[root] data.aws_ami.app_ami (expand)"
+		"[root] aws_internet_gateway.igw_aws (expand)" -> "[root] aws_vpc.a4l_aws (expand)"
+		"[root] aws_internet_gateway.igw_onprem (expand)" -> "[root] aws_vpc.onprem (expand)"
+		"[root] aws_key_pair.my_pub_key (expand)" -> "[root] provider[\"registry.terraform.io/hashicorp/aws\"]"
+		"[root] aws_network_interface.router1_lan (expand)" -> "[root] aws_instance.router (expand)"
+		"[root] aws_network_interface.router1_lan (expand)" -> "[root] aws_subnet.ONPREM-PRIVATE-1 (expand)"
+		"[root] aws_network_interface.router2_lan (expand)" -> "[root] aws_instance.router (expand)"
+		"[root] aws_network_interface.router2_lan (expand)" -> "[root] aws_subnet.ONPREM-PRIVATE-2 (expand)"
+		"[root] aws_route_table.aws-rt (expand)" -> "[root] aws_ec2_transit_gateway_vpc_attachment.tgw_attach (expand)"
+		"[root] aws_route_table.onprem-private-subnet-1-route-table (expand)" -> "[root] aws_network_interface.router1_lan (expand)"
+		"[root] aws_route_table.onprem-private-subnet-2-route-table (expand)" -> "[root] aws_network_interface.router2_lan (expand)"
+		"[root] aws_route_table.onprem-public-route-table (expand)" -> "[root] aws_internet_gateway.igw_onprem (expand)"
+		"[root] aws_route_table_association.aws-subnet-A (expand)" -> "[root] aws_route_table.aws-rt (expand)"
+		"[root] aws_route_table_association.aws-subnet-B (expand)" -> "[root] aws_route_table.aws-rt (expand)"
+		"[root] aws_route_table_association.onprem-private-subnet-1-route-table-attach (expand)" -> "[root] aws_route_table.onprem-private-subnet-1-route-table (expand)"
+		"[root] aws_route_table_association.onprem-private-subnet-2-route-table-attach (expand)" -> "[root] aws_route_table.onprem-private-subnet-2-route-table (expand)"
+		"[root] aws_route_table_association.onprem-public-subnet (expand)" -> "[root] aws_route_table.onprem-public-route-table (expand)"
+		"[root] aws_route_table_association.onprem-public-subnet (expand)" -> "[root] aws_subnet.ONPREM-PUBLIC (expand)"
+		"[root] aws_security_group.aws-sg (expand)" -> "[root] aws_vpc.a4l_aws (expand)"
+		"[root] aws_security_group.onprem-sg (expand)" -> "[root] aws_vpc.onprem (expand)"
+		"[root] aws_ssm_activation.ssm_activation (expand)" -> "[root] aws_iam_role_policy_attachment.ssm_attach (expand)"
+		"[root] aws_subnet.ONPREM-PRIVATE-1 (expand)" -> "[root] aws_vpc.onprem (expand)"
+		"[root] aws_subnet.ONPREM-PRIVATE-1 (expand)" -> "[root] data.aws_availability_zones.available (expand)"
+		"[root] aws_subnet.ONPREM-PRIVATE-2 (expand)" -> "[root] aws_vpc.onprem (expand)"
+		"[root] aws_subnet.ONPREM-PRIVATE-2 (expand)" -> "[root] data.aws_availability_zones.available (expand)"
+		"[root] aws_subnet.ONPREM-PUBLIC (expand)" -> "[root] aws_vpc.onprem (expand)"
+		"[root] aws_subnet.ONPREM-PUBLIC (expand)" -> "[root] data.aws_availability_zones.available (expand)"
+		"[root] aws_subnet.sn-aws-private-A (expand)" -> "[root] aws_vpc.a4l_aws (expand)"
+		"[root] aws_subnet.sn-aws-private-A (expand)" -> "[root] data.aws_availability_zones.available (expand)"
+		"[root] aws_subnet.sn-aws-private-B (expand)" -> "[root] aws_vpc.a4l_aws (expand)"
+		"[root] aws_subnet.sn-aws-private-B (expand)" -> "[root] data.aws_availability_zones.available (expand)"
+		"[root] aws_vpc.a4l_aws (expand)" -> "[root] provider[\"registry.terraform.io/hashicorp/aws\"]"
+		"[root] aws_vpc.onprem (expand)" -> "[root] provider[\"registry.terraform.io/hashicorp/aws\"]"
+		"[root] aws_vpn_connection.A4LTGW_R1 (expand)" -> "[root] aws_customer_gateway.router1 (expand)"
+		"[root] aws_vpn_connection.A4LTGW_R1 (expand)" -> "[root] aws_ec2_transit_gateway.tgw (expand)"
+		"[root] aws_vpn_connection.A4LTGW_R2 (expand)" -> "[root] aws_customer_gateway.router2 (expand)"
+		"[root] aws_vpn_connection.A4LTGW_R2 (expand)" -> "[root] aws_ec2_transit_gateway.tgw (expand)"
+		"[root] data.aws_ami.app_ami (expand)" -> "[root] provider[\"registry.terraform.io/hashicorp/aws\"]"
+		"[root] data.aws_ami.router_ami (expand)" -> "[root] provider[\"registry.terraform.io/hashicorp/aws\"]"
+		"[root] data.aws_availability_zones.available (expand)" -> "[root] provider[\"registry.terraform.io/hashicorp/aws\"]"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_instance.aws_ec2_a (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_instance.aws_ec2_b (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_instance.server1 (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_instance.server2 (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_internet_gateway.igw_aws (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_route_table_association.aws-subnet-A (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_route_table_association.aws-subnet-B (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_route_table_association.onprem-private-subnet-1-route-table-attach (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_route_table_association.onprem-private-subnet-2-route-table-attach (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_route_table_association.onprem-public-subnet (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] aws_ssm_activation.ssm_activation (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router1_private_ip (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router1_public_ip (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router1_tunnel1_address (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router1_tunnel1_cgw_inside_address (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router1_tunnel1_preshared_key (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router1_tunnel1_vgw_inside_address (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router1_tunnel2_address (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router1_tunnel2_cgw_inside_address (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router1_tunnel2_preshared_key (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router1_tunnel2_vgw_inside_address (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router2_private_ip (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router2_public_ip (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router2_tunnel1_address (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router2_tunnel1_cgw_inside_address (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router2_tunnel1_preshared_key (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router2_tunnel1_vgw_inside_address (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router2_tunnel2_address (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router2_tunnel2_cgw_inside_address (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router2_tunnel2_preshared_key (expand)"
+		"[root] meta.count-boundary (EachMode fixup)" -> "[root] output.router2_tunnel2_vgw_inside_address (expand)"
+		"[root] output.router1_private_ip (expand)" -> "[root] aws_instance.router (expand)"
+		"[root] output.router1_public_ip (expand)" -> "[root] aws_eip.router1_eip (expand)"
+		"[root] output.router1_tunnel1_address (expand)" -> "[root] aws_vpn_connection.A4LTGW_R1 (expand)"
+		"[root] output.router1_tunnel1_cgw_inside_address (expand)" -> "[root] aws_vpn_connection.A4LTGW_R1 (expand)"
+		"[root] output.router1_tunnel1_preshared_key (expand)" -> "[root] aws_vpn_connection.A4LTGW_R1 (expand)"
+		"[root] output.router1_tunnel1_vgw_inside_address (expand)" -> "[root] aws_vpn_connection.A4LTGW_R1 (expand)"
+		"[root] output.router1_tunnel2_address (expand)" -> "[root] aws_vpn_connection.A4LTGW_R1 (expand)"
+		"[root] output.router1_tunnel2_cgw_inside_address (expand)" -> "[root] aws_vpn_connection.A4LTGW_R1 (expand)"
+		"[root] output.router1_tunnel2_preshared_key (expand)" -> "[root] aws_vpn_connection.A4LTGW_R1 (expand)"
+		"[root] output.router1_tunnel2_vgw_inside_address (expand)" -> "[root] aws_vpn_connection.A4LTGW_R1 (expand)"
+		"[root] output.router2_private_ip (expand)" -> "[root] aws_instance.router (expand)"
+		"[root] output.router2_public_ip (expand)" -> "[root] aws_eip.router2_eip (expand)"
+		"[root] output.router2_tunnel1_address (expand)" -> "[root] aws_vpn_connection.A4LTGW_R2 (expand)"
+		"[root] output.router2_tunnel1_cgw_inside_address (expand)" -> "[root] aws_vpn_connection.A4LTGW_R2 (expand)"
+		"[root] output.router2_tunnel1_preshared_key (expand)" -> "[root] aws_vpn_connection.A4LTGW_R2 (expand)"
+		"[root] output.router2_tunnel1_vgw_inside_address (expand)" -> "[root] aws_vpn_connection.A4LTGW_R2 (expand)"
+		"[root] output.router2_tunnel2_address (expand)" -> "[root] aws_vpn_connection.A4LTGW_R2 (expand)"
+		"[root] output.router2_tunnel2_cgw_inside_address (expand)" -> "[root] aws_vpn_connection.A4LTGW_R2 (expand)"
+		"[root] output.router2_tunnel2_preshared_key (expand)" -> "[root] aws_vpn_connection.A4LTGW_R2 (expand)"
+		"[root] output.router2_tunnel2_vgw_inside_address (expand)" -> "[root] aws_vpn_connection.A4LTGW_R2 (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_instance.aws_ec2_a (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_instance.aws_ec2_b (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_instance.server1 (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_instance.server2 (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_internet_gateway.igw_aws (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_route_table_association.aws-subnet-A (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_route_table_association.aws-subnet-B (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_route_table_association.onprem-private-subnet-1-route-table-attach (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_route_table_association.onprem-private-subnet-2-route-table-attach (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_route_table_association.onprem-public-subnet (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_ssm_activation.ssm_activation (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_vpn_connection.A4LTGW_R1 (expand)"
+		"[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)" -> "[root] aws_vpn_connection.A4LTGW_R2 (expand)"
+		"[root] provisioner.remote-exec (close)" -> "[root] aws_instance.router (expand)"
+		"[root] root" -> "[root] meta.count-boundary (EachMode fixup)"
+		"[root] root" -> "[root] provider[\"registry.terraform.io/hashicorp/aws\"] (close)"
+		"[root] root" -> "[root] provisioner.remote-exec (close)"
+	}
+}
+
