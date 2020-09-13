@@ -121,6 +121,7 @@ for filename, values in files_to_download.items():
 
 bgp_config = ""
 for router in ["router1", "router2"]:
+    bgp_config += f"be aware - the public ips might be in an incorrect order, check bgp neighbors! \n"
     bgp_config += f"ssh -i my_keys ubuntu@{public_ip}\n"
     bgp_config += f"#{router} BGP configuration\n"+replace_values(bgp_configuration[router]).replace("/30","")+"\n"
     public_ip = terraform_output[f"{router}_public_ip"]["value"]
