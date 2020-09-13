@@ -14,7 +14,7 @@ https://www.reddit.com/r/aws/comments/hjtq23/mini_project_implement_a_bgp_based_
 **Disclaimer: This is just a working proof of concept, there are a lot of things to improve!**
 
   - Terraform (very basic, at lot of room for improvements) instead of Cloudformation
-  - works in every region
+  - works in every region (not if the Linux Academy cloud sandbox is in use, it is better to stick to us-east-1
   - no manual configuration (at least not much). A python script is used to convert the Terraform output into usable files.
   - no SSM yet, no VPCEs yet
   - use of latest Ubuntu (20.04) ami for the OnPrem routers
